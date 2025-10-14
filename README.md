@@ -1,16 +1,16 @@
-# Algorithmic Trading with Python
+# Algorithmic Trading AI with Python
 
 ## Target Market Pattern
  - Volatile Market
 
-![Volatile Market](./volatile_market.png)
+![Volatile Market](target-profit.png)
 
 ## Libraries
  - matplotlib
  - Yfinance
  - Pytorch
- - Pandas
  - Gemma
+ - Pandas
  - Numpy
  - Scikit-learn
 
@@ -18,6 +18,7 @@
  - BTC-USD (Bitcoin to US Dollar)
  - AAPL (Apple Inc.)
  - TSLA (Tesla Inc.)
+ - GC=F (Gold Futures)
 
 ## Inputs and outputs
 
@@ -26,7 +27,7 @@
  - News headlines sentiment will be derived
 
 ### Outputs
- - Buy/Sell/Hold signals
+ - Sell/Hold/Buy signals
 
 ## Model
  - Gemma Embedding
@@ -40,6 +41,12 @@
 
 Sorted by date, descending.
 
+```
+Prices: list of prices
+Headline: list of news headlines
+```
+
+```
 Prices: 10.0,11.0,14.0,8.0,10.0,5.0
 Headline: Sector Update: Financial Stocks Rise Tuesday Afternoon
 
@@ -48,7 +55,15 @@ Headline: Sector Update: Financial Stocks Rise Tuesday Afternoon
 
 Prices: 10.0,11.0,14.0,8.0,10.0,5.0
 Headline: Sector Update: Financial Stocks Rise Tuesday Afternoon
+```
+### Ouptput Data Format
+Sell/Hold/Buy signals
+-1,0,1
 
-list of prices,
-list of news headlines
+Sell = -1
+Hold = 0
+Buy  = 1
 
+
+### Limit Triggers Indications
+- Average up and down cycles
