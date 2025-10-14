@@ -3,6 +3,8 @@
 ## Target Market Pattern
  - Volatile Market
 
+![Volatile Market](./volatile_market.png)
+
 ## Libraries
  - matplotlib
  - Yfinance
@@ -37,6 +39,12 @@
 ### Input Data Format 
 
 Sorted by date, descending.
+
+Prices: 10.0,11.0,14.0,8.0,10.0,5.0
+Headline: Sector Update: Financial Stocks Rise Tuesday Afternoon
+
+Prices: 10.0,11.0,14.0,8.0,10.0,5.0
+Headline: Sector Update: Financial Stocks Rise Tuesday Afternoon
 
 Prices: 10.0,11.0,14.0,8.0,10.0,5.0
 Headline: Sector Update: Financial Stocks Rise Tuesday Afternoon
