@@ -9,7 +9,7 @@
  - matplotlib
  - Yfinance
  - Pytorch
- - Gemma
+ - Gemma embedding
  - Pandas
  - Numpy
  - Scikit-learn
@@ -64,6 +64,7 @@ Sell = -1
 Hold = 0
 Buy  = 1
 
-
 ### Limit Triggers Indications
 - Average up and down cycles
+- 1% limit triggers 100 gain 1 dollar 101
+- time window is 5 minutes
