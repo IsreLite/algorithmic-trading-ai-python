@@ -6,10 +6,10 @@
 ![Volatile Market](target-profit.png)
 
 ## Libraries
- - matplotlib
- - Yfinance
+ - Yfinance (datasource)
  - Pytorch
  - Gemma embedding
+ - matplotlib
  - Pandas
  - Numpy
  - Scikit-learn
@@ -30,8 +30,9 @@
  - Sell/Hold/Buy signals
 
 ## Model
- - Gemma Embedding
+ - Gemma Embedding (300m parameters)
  - Pytorch Transformer
+ - Classification Layer ([3] output)
 
 ## Training
  - Supervised learning
@@ -58,11 +59,11 @@ Headline: Sector Update: Financial Stocks Rise Tuesday Afternoon
 ```
 ### Ouptput Data Format
 Sell/Hold/Buy signals
--1,0,1
+[0,   0,   0 ]
 
-Sell = -1
-Hold = 0
-Buy  = 1
+Sell = [1, 0, 0]
+Hold = [0, 1, 0]
+Buy  = [0, 0, 1]
 
 ### Limit Triggers Indications
 - Average up and down cycles
