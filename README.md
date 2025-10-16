@@ -2,6 +2,8 @@
 
 ## Target Market Pattern
  - Volatile Market
+ - Lots of news events 
+ - High volume
 
 ![Volatile Market](target-profit.png)
 

@@ -3,8 +3,9 @@ import datetime
 import yfinance as yf
 
 def main():
-    prepare_data()
     #download_ticker()
+    #download_news()
+    prepare_data()
 
 ## Download BTC-USD historical data from Yahoo Finance
 ## Minute resolution data for the last 60 days
@@ -17,8 +18,8 @@ def download_ticker():
     ## Save to file
     with open('BTC-USD_historical_data.json', 'w') as f:
         json.dump(close, f, indent=4)
-        
 
+## Download BTC-USD news from Yahoo Finance
 def download_news():
     ## Download News for BTC-USD from Yahoo Finance
     news = yf.Ticker('BTC-USD').get_news(count=1000)
@@ -41,23 +42,31 @@ def prepare_data():
         title   = item['content']['title']
         summary = item['content']['summary']
         pubDate = item['content']['pubDate']
+
         ## Convert pubDate to unix timestamp
         pubDate_ts = int(datetime.datetime.strptime(pubDate, '%Y-%m-%dT%H:%M:%SZ').timestamp())
 
         # Round down to nearest 5 minutes
         index = pubDate_ts - (pubDate_ts % 300)  
         price = ticker.get(f"{index}000")
+        future_price = ticker.get(f"{index + 300}000")
 
+        if price is None or future_price is None:
+            print(f"Skipping entry with missing price data: title={title}, pubDate={pubDate}, index={index}")
+            continue    
+
+        difference = price - future_price
         output.append({
             'title': title,
             'index': index,
             'price' : price,
+            'future_price': future_price,
+            'difference': difference,
+            'percentage': (difference / price) * 100,
             'summary': summary,
             'pubDate': pubDate,
             'pubDate_ts': pubDate_ts,
         })
-        print(output)
-        return
 
     with open('BTC-USD_news_with_price.json', 'w') as f:
         json.dump(output, f, indent=4)
