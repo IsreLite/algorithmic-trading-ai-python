@@ -9,8 +9,8 @@
 
 ## Libraries
  - Yfinance (datasource)
- - Pytorch
- - Gemma embedding
+ - Pytorch Transformer 
+ - Gemma embedding 300m GOOGLE 
  - matplotlib
  - Pandas
  - Numpy
@@ -27,6 +27,7 @@
 ### Input data
  - Historical price data 
  - News headlines sentiment will be derived
+ - Foreign policy events
 
 ### Outputs
  - Sell/Hold/Buy signals

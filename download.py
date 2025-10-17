@@ -29,13 +29,12 @@ def download_news():
 ## Prepare data for training
 def prepare_data():
     output = []
+
+    ## Load data from files
     with open('BTC-USD_historical_data.json', 'r') as f:
         ticker = json.load(f)
-        #print(json.dumps(ticker, indent=4)[:5])  # Print first 500 characters
-
     with open('BTC-USD_news.json', 'r') as f:
         news = json.load(f)
-        #print(json.dumps(news, indent=4)[:500])  # Print first 500 characters
 
     ## Augment with Pricing data
     for item in news:
@@ -70,6 +69,5 @@ def prepare_data():
 
     with open('BTC-USD_news_with_price.json', 'w') as f:
         json.dump(output, f, indent=4)
-
 
 if __name__ == "__main__": main()
