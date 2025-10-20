@@ -7,13 +7,21 @@
 
 ![Volatile Market](target-profit.png)
 
+## Tuning and Optimization
+ - SGD
+ - Learning Rate
+ - Batch Size
+ - More Data ( pull in from download.py)
+ - Activations
+ - instead of Gemma UniforScalar + NLP Embedding
+
 ## Libraries
  - Yfinance (datasource)
  - Pytorch Transformer 
  - Gemma embedding 300m GOOGLE 
+ - Numpy
  - matplotlib
  - Pandas
- - Numpy
  - Scikit-learn
 
 ## Target Symbol

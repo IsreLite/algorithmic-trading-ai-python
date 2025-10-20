@@ -6,12 +6,12 @@ from torch.utils.data import TensorDataset, DataLoader
 from models.gemma_transformer_classifier import SimpleGemmaTransformerClassifier 
 
 ## Parameters
-learning_rate = 0.002
+learning_rate = 0.02
 
 ## Model
 model = SimpleGemmaTransformerClassifier(device=torch.device('mps'))
-optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
-#optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+#optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 criterion = nn.CrossEntropyLoss()
 
 ## read BTC-USD_news_with_price.json
@@ -71,7 +71,7 @@ dataset = TensorDataset(
 dataloader = DataLoader(dataset, batch_size=4, shuffle=True)
 """
 
-batch = 4
+batch = 2
 epochs = 10
 model.train()
 for epoch in range(epochs):
@@ -84,9 +84,12 @@ for epoch in range(epochs):
     for i in range(len(features) // batch):
         input  =  inputs[i * batch : i * batch + batch]
         target = torch.from_numpy(targets[i * batch : i * batch + batch])
-        #target.float().to(torch.device('mps'))
 
         optimizer.zero_grad()
+        ## TODO optimize pre-embedding step
+        ### options
+        ### caching embeddings
+        ### 
         logits = model(input)
 
         loss = criterion(logits, target.float().to(torch.device('mps')))

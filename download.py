@@ -21,6 +21,11 @@ def download_ticker():
 
 ## Download BTC-USD news from Yahoo Finance
 def download_news():
+    ## Load existing news to avoid duplicates
+    news = []
+    with open('BTC-USD_news.json', 'r') as f:
+        news = json.load(f)
+
     ## Download News for BTC-USD from Yahoo Finance
     news = yf.Ticker('BTC-USD').get_news(count=1000)
     with open('BTC-USD_news.json', 'w') as f:
