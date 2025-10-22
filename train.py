@@ -6,7 +6,14 @@ from torch.utils.data import TensorDataset, DataLoader
 from models.gemma_transformer_classifier import SimpleGemmaTransformerClassifier 
 
 ## Parameters
-learning_rate = 0.02
+learning_rate = 0.002
+batch = 1
+epochs = 5
+
+## Define our labels
+sell = [1., 0., 0.]
+hold = [0., 1., 0.]
+buy  = [0., 0., 1.]
 
 ## Model
 model = SimpleGemmaTransformerClassifier(device=torch.device('mps'))
@@ -18,10 +25,6 @@ criterion = nn.CrossEntropyLoss()
 with open('BTC-USD_news_with_price.json', 'r') as f:
     training = json.load(f)
 
-## Define our labels
-sell = [1., 0., 0.]
-hold = [0., 1., 0.]
-buy  = [0., 0., 1.]
 
 ## Generate our features and labels
 features = []
@@ -34,9 +37,6 @@ for item in training:
         f"Summary: {item['summary']}"])
     )
 
-    #"difference": -448.9140625,
-    #"percentage": -0.414575337871938
-
     if item['percentage'] < -0.05:
         labels.append(sell)
     elif item['percentage'] > 0.05:
@@ -44,39 +44,8 @@ for item in training:
     else:
         labels.append(hold)
 
-print(features[0:2])
-print(labels[0:2])
-## TODO
-## TODO
-## TODO merge features together in a single context
-## TODO
-## TODO
-
-
-
-
-## TODO 
-## TODO 
-## TODO 
-## TODO ⛔️ data shuffle with DataLoader and TensorDataset
-## TODO  ✅ to_device() #<<- find devices automatically
-## TODO 
-## TODO 
-
-"""
-dataset = TensorDataset(
-    features,
-    torch.from_numpy(np.array(labels)).long(),
-)
-dataloader = DataLoader(dataset, batch_size=4, shuffle=True)
-"""
-
-batch = 2
-epochs = 10
 model.train()
 for epoch in range(epochs):
-    #for batch_features, batch_labels in dataloader:
-    
     stochastic = np.random.permutation(len(features))
     inputs = np.array(features)[stochastic]
     targets = np.array(labels)[stochastic]
@@ -89,13 +58,32 @@ for epoch in range(epochs):
         ## TODO optimize pre-embedding step
         ### options
         ### caching embeddings
-        ### 
         logits = model(input)
 
-        loss = criterion(logits, target.float().to(torch.device('mps')))
+        loss = criterion(
+            logits,
+            target.float().to(torch.device('mps'))
+        )
         loss.backward()
         optimizer.step()
         probs = logits.softmax(dim=-1).detach().cpu()
         print(f"Epoch {epoch + 1}: loss={loss.item():.4f} probs={probs}")
 
+## Evaluate Model Accuracy
+#correct = 0
+#total = 0
 
+#model.eval()
+#with torch.no_grad():
+#    for i in range(len(features[:100])):
+#        input  = [features[i]]
+#        target = torch.tensor(labels[i])
+#
+#        logits = model(input)
+#        probs = logits.softmax(dim=-1).cpu()
+#        predicted = torch.argmax(probs, dim=-1)
+#        actual = torch.argmax(target.float().to(torch.device('mps')))
+#
+#        if predicted.item() == actual.item():
+#            correct += 1
+#        total += 1

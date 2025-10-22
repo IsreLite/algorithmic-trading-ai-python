@@ -12,7 +12,7 @@ class SimpleGemmaTransformerClassifier(nn.Module):
 
     def __init__(
         self,
-        num_classes: int = 3, # OUTPUT CLASSES: buy, sell, hold
+        num_classes: int = 3,
         hidden_dim: int = 256,
         num_layers: int = 2,
         num_heads: int = 4,

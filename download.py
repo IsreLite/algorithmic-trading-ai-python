@@ -3,17 +3,25 @@ import datetime
 import yfinance as yf
 
 def main():
-    #download_ticker()
-    #download_news()
+    download_ticker()
+    download_news()
     prepare_data()
 
 ## Download BTC-USD historical data from Yahoo Finance
 ## Minute resolution data for the last 60 days
 def download_ticker():
+    with open('BTC-USD_historical_data.json', 'r') as f:
+        existing_data = json.load(f)
+
     data = yf.download(tickers='BTC-USD', period='1mo', interval='5m')
     encoded = data.to_json()
     decoded = json.loads(encoded)
     close   = decoded["('Open', 'BTC-USD')"]
+
+    ## Merge with existing data with close
+    for kj in existing_data:
+        if kj not in close:
+            close[kj] = existing_data[kj]
     
     ## Save to file
     with open('BTC-USD_historical_data.json', 'w') as f:
@@ -27,7 +35,10 @@ def download_news():
         news = json.load(f)
 
     ## Download News for BTC-USD from Yahoo Finance
-    news = yf.Ticker('BTC-USD').get_news(count=1000)
+    new_news = yf.Ticker('BTC-USD').get_news(count=1000)
+    if new_news is None: new_news = []
+    news += new_news
+
     with open('BTC-USD_news.json', 'w') as f:
         json.dump(news, f, indent=4)
 

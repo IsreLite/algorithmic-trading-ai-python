@@ -8,12 +8,18 @@
 ![Volatile Market](target-profit.png)
 
 ## Tuning and Optimization
+ - ✅ More DATA!
+     - ✅ More Data ( pull in from download.py)
+     - ✅
+ - Sequence Data ( merge sequences together )
+ - Embedding Cacheing ( save embeddings hash )
+ - Batch Size
+     - Multi-stage Batch Training
+ - Dropout Rate
  - SGD
  - Learning Rate
- - Batch Size
- - More Data ( pull in from download.py)
  - Activations
- - instead of Gemma UniforScalar + NLP Embedding
+ - Instead of Gemma UniforScalar + NLP Embedding
 
 ## Libraries
  - Yfinance (datasource)
