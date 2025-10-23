@@ -1,5 +1,6 @@
 """Minimal Gemma + PyTorch Transformer text classifier for 3-way decisions."""
 
+import hashlib
 from typing import Iterable, Optional
 
 import torch
@@ -21,10 +22,10 @@ class SimpleGemmaTransformerClassifier(nn.Module):
         device: Optional[torch.device] = None,
     ) -> None:
         super().__init__()
+        self.embedding_cache = {}
         self.device = torch.device(device) if device is not None else torch.device("cpu")
         self.embedding_model = SentenceTransformer("google/embeddinggemma-300m", device=str(self.device))
         embedding_dim = self.embedding_model.get_sentence_embedding_dimension()
-
         self.project = nn.Linear(embedding_dim, hidden_dim) if embedding_dim != hidden_dim else nn.Identity()
 
         encoder_layer = nn.TransformerEncoderLayer(
@@ -32,33 +33,50 @@ class SimpleGemmaTransformerClassifier(nn.Module):
             nhead=num_heads,
             dropout=dropout,
             batch_first=True,
+            activation='gelu',
         )
+
         self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=num_layers)
-        self.classifier = nn.Linear(hidden_dim, num_classes)
+        self.classifier = nn.Sequential(
+            nn.Linear(hidden_dim, num_classes),
+            nn.Sigmoid()
+        )
 
         self.freeze_embedding = freeze_embedding
         self.to(self.device)
 
-    def forward(self, texts: Iterable[str]) -> Tensor:
-        features = self.embedding_model.tokenize(list(texts))
-        features = {name: tensor.to(self.device) for name, tensor in features.items()}
+    def embedding(self, text: str) -> Tensor:
+        """Compute or retrieve cached Gemma embedding for a single text."""
+        key = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        if key not in self.embedding_cache:
+            features = self.embedding_model.tokenize([text])
+            features = {name: tensor.to(self.device) for name, tensor in features.items()}
 
-        if self.freeze_embedding:
             with torch.no_grad():
                 outputs = self.embedding_model(features)
-        else:
-            outputs = self.embedding_model(features)
 
-        token_embeddings = outputs["token_embeddings"]
-        attention_mask = features["attention_mask"]
+            token_embeddings = outputs["token_embeddings"]
+            attention_mask = features["attention_mask"]
 
-        hidden = self.project(token_embeddings)
+            mask = attention_mask.unsqueeze(-1)
+            pooled = (token_embeddings * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1)
 
-        key_padding_mask = attention_mask == 0
-        encoded = self.transformer(hidden, src_key_padding_mask=key_padding_mask)
+            self.embedding_cache[key] = pooled.squeeze(0)
 
-        mask = attention_mask.unsqueeze(-1)
-        pooled = (encoded * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1)
+        return self.embedding_cache[key]
+
+    def forward(self, texts: Iterable[str]) -> Tensor:
+        # Use cached embeddings for each text
+        embeddings = torch.stack([self.embedding(text) for text in texts])
+
+        # Project embeddings to hidden dimension
+        hidden = self.project(embeddings).unsqueeze(1)  # Add sequence dimension
+
+        # Pass through transformer (sequence length = 1)
+        encoded = self.transformer(hidden)
+
+        # Remove sequence dimension
+        pooled = encoded.squeeze(1)
 
         return self.classifier(pooled)
 

@@ -6,9 +6,9 @@ from torch.utils.data import TensorDataset, DataLoader
 from models.gemma_transformer_classifier import SimpleGemmaTransformerClassifier 
 
 ## Parameters
-learning_rate = 0.002
+learning_rate = 0.01
 batch = 1
-epochs = 5
+epochs = 20
 
 ## Define our labels
 sell = [1., 0., 0.]
@@ -70,20 +70,24 @@ for epoch in range(epochs):
         print(f"Epoch {epoch + 1}: loss={loss.item():.4f} probs={probs}")
 
 ## Evaluate Model Accuracy
-#correct = 0
-#total = 0
+correct = 0
+total = 0
 
 #model.eval()
 #with torch.no_grad():
-#    for i in range(len(features[:100])):
-#        input  = [features[i]]
-#        target = torch.tensor(labels[i])
-#
-#        logits = model(input)
-#        probs = logits.softmax(dim=-1).cpu()
-#        predicted = torch.argmax(probs, dim=-1)
-#        actual = torch.argmax(target.float().to(torch.device('mps')))
-#
-#        if predicted.item() == actual.item():
-#            correct += 1
-#        total += 1
+for i in range(len(features[:100])):
+    input  = [features[i]]
+    target = torch.tensor(labels[i])
+
+    logits = model(input)
+    probs = logits.softmax(dim=-1).cpu()
+    predicted = torch.argmax(probs, dim=-1)
+    actual = torch.argmax(target.float().to(torch.device('mps')))
+
+    if predicted.item() == actual.item():
+        correct += 1
+    total += 1
+
+print(f"Accuracy: {correct}/{total} = {correct / total:.4f}")
+print("Done")
+
