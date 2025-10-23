@@ -7,7 +7,7 @@ from models.gemma_transformer_classifier import SimpleGemmaTransformerClassifier
 from sklearn.metrics import f1_score 
 
 ## Parameters
-learning_rate = 0.001
+learning_rate = 0.005
 batch = 1
 epochs = 20
 
@@ -72,8 +72,8 @@ for epoch in range(epochs):
         optimizer.step()
         probs = logits.softmax(dim=-1).detach().cpu()
         item_losses.append(loss.item())
-        cost = sum(item_losses) / len(item_losses)
-        print(f"Epoch {epoch + 1}: cost={cost} loss={loss.item():.4f} probs={probs}")
+        cost = sum(item_losses[-250:]) / len(item_losses[-250:])
+        print(f"Epoch {epoch + 1}: loss={cost:.4f} probs={probs}")
 
 ## Evaluate Model Accuracy
 correct = 0
