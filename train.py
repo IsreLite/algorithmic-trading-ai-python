@@ -7,7 +7,7 @@ from models.gemma_transformer_classifier import SimpleGemmaTransformerClassifier
 from sklearn.metrics import f1_score 
 
 ## Parameters
-learning_rate = 0.005
+learning_rate = 0.001
 batch = 1
 epochs = 20
 
@@ -38,13 +38,16 @@ for item in training:
         f"Summary: {item['summary']}"])
     )
 
-    if item['percentage'] < -0.1:
+    ## Generate labels based on percentage change
+    ## Actions Buy / Sell / Hold
+    if item['percentage'] < -0.01:
         labels.append(sell)
-    elif item['percentage'] > 0.1:
+    elif item['percentage'] > 0.01:
         labels.append(buy)
     else:
         labels.append(hold)
 
+item_losses = []
 model.train()
 for epoch in range(epochs):
     stochastic = np.random.permutation(len(features))
@@ -68,7 +71,9 @@ for epoch in range(epochs):
         loss.backward()
         optimizer.step()
         probs = logits.softmax(dim=-1).detach().cpu()
-        print(f"Epoch {epoch + 1}: loss={loss.item():.4f} probs={probs}")
+        item_losses.append(loss.item())
+        cost = sum(item_losses) / len(item_losses)
+        print(f"Epoch {epoch + 1}: cost={cost} loss={loss.item():.4f} probs={probs}")
 
 ## Evaluate Model Accuracy
 correct = 0

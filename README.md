@@ -1,14 +1,18 @@
 # Algorithmic Trading AI with Python
 
 ## Tuning and Optimization
- - More data again!
+ - Calcluate the Cost
+ - Reduce dimentionality of embeddings
+ - Change input data add more Symbols
+ - EARLY STOPPING!!!
+ - ✅ More data again!
  - Labels threshold changes ( reduce from 0.1% to 0.05% )
  - Batch Size
      - Multi-stage Batch Training
  - Dropout Rate
- - SGD
  - Learning Rate
- - Activations
+ - ✅ SGD
+ - ✅ Activations
  - More Input
     - Time of day (vectorize, day of week )
  - Learning rate adjustments
