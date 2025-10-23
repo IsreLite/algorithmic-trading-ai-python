@@ -1,25 +1,30 @@
 # Algorithmic Trading AI with Python
 
-## Target Market Pattern
- - Volatile Market
- - Lots of news events 
- - High volume
-
-![Volatile Market](target-profit.png)
-
 ## Tuning and Optimization
- - ✅ More DATA!
-     - ✅ More Data ( pull in from download.py)
-     - ✅
- - Sequence Data ( merge sequences together )
- - Embedding Cacheing ( save embeddings hash )
+ - More data again!
+ - Labels threshold changes ( reduce from 0.1% to 0.05% )
  - Batch Size
      - Multi-stage Batch Training
  - Dropout Rate
  - SGD
  - Learning Rate
  - Activations
- - Instead of Gemma UniforScalar + NLP Embedding
+ - More Input
+    - Time of day (vectorize, day of week )
+ - Learning rate adjustments
+ - ✅ More DATA!
+     - ✅ More Data ( pull in from download.py)
+     - ✅
+ - Sequence Data ( merge sequences together )
+ - Embedding Cacheing ( save embeddings hash )
+ - ~~Instead of Gemma UniformScalar + NLP Embedding~~
+
+## Target Market Pattern
+ - Volatile Market
+ - Lots of news events 
+ - High volume
+
+![Volatile Market](target-profit.png)
 
 ## Libraries
  - Yfinance (datasource)

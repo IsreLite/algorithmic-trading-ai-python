@@ -3,10 +3,11 @@ import torch
 import numpy as np
 from torch import Tensor, nn
 from torch.utils.data import TensorDataset, DataLoader
-from models.gemma_transformer_classifier import SimpleGemmaTransformerClassifier 
+from models.gemma_transformer_classifier import SimpleGemmaTransformerClassifier
+from sklearn.metrics import f1_score 
 
 ## Parameters
-learning_rate = 0.01
+learning_rate = 0.005
 batch = 1
 epochs = 20
 
@@ -37,9 +38,9 @@ for item in training:
         f"Summary: {item['summary']}"])
     )
 
-    if item['percentage'] < -0.05:
+    if item['percentage'] < -0.1:
         labels.append(sell)
-    elif item['percentage'] > 0.05:
+    elif item['percentage'] > 0.1:
         labels.append(buy)
     else:
         labels.append(hold)
@@ -72,22 +73,32 @@ for epoch in range(epochs):
 ## Evaluate Model Accuracy
 correct = 0
 total = 0
+all_predictions = []
+all_actuals = []
 
-#model.eval()
-#with torch.no_grad():
-for i in range(len(features[:100])):
-    input  = [features[i]]
-    target = torch.tensor(labels[i])
+model.eval()
+with torch.no_grad():
+    for i in range(len(features[:100])):
+        input  = [features[i]]
+        target = torch.tensor(labels[i])
 
-    logits = model(input)
-    probs = logits.softmax(dim=-1).cpu()
-    predicted = torch.argmax(probs, dim=-1)
-    actual = torch.argmax(target.float().to(torch.device('mps')))
+        logits = model(input)
+        probs = logits.softmax(dim=-1).cpu()
+        predicted = torch.argmax(probs, dim=-1)
+        actual = torch.argmax(target.float().to(torch.device('mps')))
 
-    if predicted.item() == actual.item():
-        correct += 1
-    total += 1
+        all_predictions.append(predicted.item())
+        all_actuals.append(actual.item())
 
+        if predicted.item() == actual.item():
+            correct += 1
+        total += 1
+
+# Calculate Accuracy
 print(f"Accuracy: {correct}/{total} = {correct / total:.4f}")
+
+# Calculate F1 Score
+f1 = f1_score(all_actuals, all_predictions, average='weighted')
+print(f"F1 Score (weighted): {f1:.4f}")
 print("Done")
 

@@ -18,7 +18,6 @@ class SimpleGemmaTransformerClassifier(nn.Module):
         num_layers: int = 2,
         num_heads: int = 4,
         dropout: float = 0.1,
-        freeze_embedding: bool = True,
         device: Optional[torch.device] = None,
     ) -> None:
         super().__init__()
@@ -42,7 +41,6 @@ class SimpleGemmaTransformerClassifier(nn.Module):
             nn.Sigmoid()
         )
 
-        self.freeze_embedding = freeze_embedding
         self.to(self.device)
 
     def embedding(self, text: str) -> Tensor:
@@ -94,7 +92,7 @@ def example_train(epochs: int = 2, lr: float = 1e-4) -> None:
     Tiny illustrative training loop. Replace ``texts`` and ``labels`` with
     real data when integrating into your pipeline.
     """
-    model = SimpleGemmaTransformerClassifier(freeze_embedding=False)
+    model = SimpleGemmaTransformerClassifier()
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
     criterion = nn.CrossEntropyLoss()
 
