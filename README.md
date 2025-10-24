@@ -9,25 +9,32 @@ pip install -r requirements.txt
 ```
 
 ## HuggingFace Hub Login
+
+For the Gemma Embedding model, you need to login to HuggingFace Hub
+
 ```
-huggingface-cli login
+hf auth login
 ```
 
 Model trains on 80% of data, tests on 20% of data.
 
 ```bash
 python download.py ## (OPTIONAL) Download New Data
-python train.py    ##  (OPTIONAL) Train the model ( recommend modify parameters in the script )
+python train.py    ## (OPTIONAL) Re-Train the model
 python test.py     ## Test the model ( recommend modify parameters in the script )
 ```
 
+> 💡 The model is already trained, so running `train.py` is optional.
+> Find the trained model saved as `gemma_transformer_classifier.pth`
+
 ## To Profit from the model, probabaly??!?!?
 In order to use the model, copy `test.py` to `profit.py`
-and modiy to use Yfinance websocket data stream.
+and modiy it to use Yfinance websocket data stream.
+https://ranaroussi.github.io/yfinance/reference/yfinance.websocket.html
 When a price signal is generated, load news (see download.py)
 process the data the same way in `test.py` and get the model output.
 
-Be carful, this is not financial advice, and the model is not guaranteed to be profitable.
+> ⚠️  Be carful, this is not financial advice, and the model is not guaranteed to be profitable.
 
 ## Tuning and Optimization
  - ✅ Save and load model
