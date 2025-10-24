@@ -6,26 +6,17 @@ from torch.utils.data import TensorDataset, DataLoader
 from models.gemma_transformer_classifier import SimpleGemmaTransformerClassifier
 from sklearn.metrics import f1_score 
 
-## Parameters
-learning_rate = 0.005
-batch = 1
-epochs = 20
-
-## Define our labels
+## Define our labels "tokens"
 sell = [1., 0., 0.]
 hold = [0., 1., 0.]
 buy  = [0., 0., 1.]
 
-## Model
 model = SimpleGemmaTransformerClassifier()
-#optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
-optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
-criterion = nn.CrossEntropyLoss()
+model.load_state_dict(torch.load('gemma_transformer_classifier.pth'))
 
 ## read BTC-USD_news_with_price.json
 with open('BTC-USD_news_with_price.json', 'r') as f:
     training = json.load(f)
-
 
 ## Generate our features and labels
 features = []
@@ -49,35 +40,8 @@ for item in training:
 
 ## Separate Train and Test sets
 split_index = int(0.8 * len(features))
-train_features = features[:split_index]
-train_labels = labels[:split_index]
 test_features = features[split_index:]
 test_labels = labels[split_index:]
-
-item_losses = []
-model.train()
-for epoch in range(epochs):
-    stochastic = np.random.permutation(len(train_features))
-    inputs = np.array(train_features)[stochastic]
-    targets = np.array(train_labels)[stochastic]
-
-    for i in range(len(inputs) // batch):
-        input  =  inputs[i * batch : i * batch + batch]
-        target = torch.from_numpy(targets[i * batch : i * batch + batch])
-
-        optimizer.zero_grad()
-        logits = model(input)
-
-        loss = criterion(
-            logits,
-            target.float().to(torch.device('mps'))
-        )
-        loss.backward()
-        optimizer.step()
-        probs = logits.softmax(dim=-1).detach().cpu()
-        item_losses.append(loss.item())
-        cost = sum(item_losses[-250:]) / len(item_losses[-250:])
-        print(f"Epoch {epoch + 1}: loss={cost:.4f} probs={probs}")
 
 ## Evaluate Model Accuracy
 correct = 0

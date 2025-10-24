@@ -1,24 +1,43 @@
 # Algorithmic Trading AI with Python
 
+## Usage Guide Training and Testing
+
+Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+Model trains on 80% of data, tests on 20% of data.
+
+```bash
+python download.py ## (OPTIONAL) Download New Data
+python train.py  ## Train the model ( recommend modify parameters in the script )
+python test.py   ## Test the model ( recommend modify parameters in the script )
+```
+
 ## Tuning and Optimization
- - Calcluate the Cost
+ - ✅ Save and load model
+ - ✅ Calcluate the Cost
+ - ✅ Separate training and validation data
+ - ✅ More data again!
+ - ✅ SGD
+ - ✅ Activations
+ - ✅ More DATA!
+     - ✅ More Data ( pull in from download.py)
+     - ✅
+ - Capture median price % deltas and use that as market indicator
+ - Reinforcement learning
  - Reduce dimentionality of embeddings
  - Change input data add more Symbols
- - EARLY STOPPING!!!
- - ✅ More data again!
  - Labels threshold changes ( reduce from 0.1% to 0.05% )
  - Batch Size
      - Multi-stage Batch Training
  - Dropout Rate
  - Learning Rate
- - ✅ SGD
- - ✅ Activations
  - More Input
     - Time of day (vectorize, day of week )
  - Learning rate adjustments
- - ✅ More DATA!
-     - ✅ More Data ( pull in from download.py)
-     - ✅
  - Sequence Data ( merge sequences together )
  - Embedding Cacheing ( save embeddings hash )
  - ~~Instead of Gemma UniformScalar + NLP Embedding~~

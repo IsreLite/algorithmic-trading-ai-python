@@ -7,10 +7,26 @@ import torch
 from torch import Tensor, nn
 from sentence_transformers import SentenceTransformer
 
+# Define a function to automatically get the best available device
+def get_best_device():
+    # Check for CUDA (NVIDIA GPU) availability
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+        print(f"Using GPU: {torch.cuda.get_device_name(0)}")
+    # Check for MPS (Apple Silicon GPU) availability
+    elif torch.backends.mps.is_available():
+        device = torch.device('mps')
+        print("Using Apple Silicon MPS device")
+    # Fallback to CPU
+    else:
+        device = torch.device('cpu')
+        print("Using CPU")
+    
+    return device
+
 
 class SimpleGemmaTransformerClassifier(nn.Module):
     """Wraps Google Gemma embeddings with a tiny Transformer encoder head."""
-
     def __init__(
         self,
         num_classes: int = 3,
@@ -18,11 +34,10 @@ class SimpleGemmaTransformerClassifier(nn.Module):
         num_layers: int = 2,
         num_heads: int = 4,
         dropout: float = 0.1,
-        device: Optional[torch.device] = None,
     ) -> None:
         super().__init__()
         self.embedding_cache = {}
-        self.device = torch.device(device) if device is not None else torch.device("cpu")
+        self.device = get_best_device()
         self.embedding_model = SentenceTransformer("google/embeddinggemma-300m", device=str(self.device))
         embedding_dim = self.embedding_model.get_sentence_embedding_dimension()
         self.project = nn.Linear(embedding_dim, hidden_dim) if embedding_dim != hidden_dim else nn.Identity()
