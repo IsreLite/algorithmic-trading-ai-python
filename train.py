@@ -47,21 +47,25 @@ for item in training:
     else:
         labels.append(hold)
 
+## Separate Train and Test sets
+split_index = int(0.8 * len(features))
+train_features = features[:split_index]
+train_labels = labels[:split_index]
+test_features = features[split_index:]
+test_labels = labels[split_index:]
+
 item_losses = []
 model.train()
 for epoch in range(epochs):
-    stochastic = np.random.permutation(len(features))
-    inputs = np.array(features)[stochastic]
-    targets = np.array(labels)[stochastic]
+    stochastic = np.random.permutation(len(train_features))
+    inputs = np.array(train_features)[stochastic]
+    targets = np.array(train_labels)[stochastic]
 
-    for i in range(len(features) // batch):
+    for i in range(len(inputs) // batch):
         input  =  inputs[i * batch : i * batch + batch]
         target = torch.from_numpy(targets[i * batch : i * batch + batch])
 
         optimizer.zero_grad()
-        ## TODO optimize pre-embedding step
-        ### options
-        ### caching embeddings
         logits = model(input)
 
         loss = criterion(
@@ -83,9 +87,9 @@ all_actuals = []
 
 model.eval()
 with torch.no_grad():
-    for i in range(len(features[:100])):
-        input  = [features[i]]
-        target = torch.tensor(labels[i])
+    for i in range(len(test_features)):
+        input  = [test_features[i]]
+        target = torch.tensor(test_labels[i])
 
         logits = model(input)
         probs = logits.softmax(dim=-1).cpu()
