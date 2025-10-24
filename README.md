@@ -8,13 +8,26 @@ Install Dependencies
 pip install -r requirements.txt
 ```
 
+## HuggingFace Hub Login
+```
+huggingface-cli login
+```
+
 Model trains on 80% of data, tests on 20% of data.
 
 ```bash
 python download.py ## (OPTIONAL) Download New Data
-python train.py  ## Train the model ( recommend modify parameters in the script )
-python test.py   ## Test the model ( recommend modify parameters in the script )
+python train.py    ##  (OPTIONAL) Train the model ( recommend modify parameters in the script )
+python test.py     ## Test the model ( recommend modify parameters in the script )
 ```
+
+## To Profit from the model, probabaly??!?!?
+In order to use the model, copy `test.py` to `profit.py`
+and modiy to use Yfinance websocket data stream.
+When a price signal is generated, load news (see download.py)
+process the data the same way in `test.py` and get the model output.
+
+Be carful, this is not financial advice, and the model is not guaranteed to be profitable.
 
 ## Tuning and Optimization
  - ✅ Save and load model

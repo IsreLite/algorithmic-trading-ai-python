@@ -26,7 +26,6 @@ criterion = nn.CrossEntropyLoss()
 with open('BTC-USD_news_with_price.json', 'r') as f:
     training = json.load(f)
 
-
 ## Generate our features and labels
 features = []
 labels = []
